@@ -15,9 +15,9 @@ Toast Notifications: Receive feedback through toast notifications for successful
 Local Storage Integration: Tasks are stored in local storage to persist data between sessions.
 
 Getting Started
-1. Clone the Repository: git clone https://github.com/madhu-sudhan-rao/kanban-board.git
-2. Install Dependencies: npm install
-3. Start the Application: npm run dev
+1. Clone the Repository: `git clone https://github.com/madhu-sudhan-rao/kanban-board.git`
+2. Install Dependencies: `npm install`
+3. Start the Application: `npm run dev`
 
 4. Technologies Used
 Frontend: React + Vite
