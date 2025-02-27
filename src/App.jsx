@@ -7,6 +7,7 @@ import { Button } from "./components/ui/button";
 import { Plus } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./components/ui/tooltip";
 import { toast } from "sonner";
+import AddColumn from "./components/addColumn/AddColumn";
 
 function addColumnsToLocalStorage(columns) {
   if (columns && columns.length > 0) {
@@ -28,6 +29,23 @@ function getColumnsFromLocalStorage() {
 function App() {
 
   const [columnData, setColumnData] = useState(getColumnsFromLocalStorage())
+  const [isAddColumnDialogOpen, setIsAddColumnDialogOpen ] = useState(false)
+
+  const openAddColumnDialog = () => {
+    setIsAddColumnDialogOpen(true)
+  }
+
+  const handleDialogClose = () => {
+    setIsAddColumnDialogOpen(close)
+  }
+
+  const addColumn = (column) => {
+    const updatedColumns = [...columnData, column];
+    setColumnData(updatedColumns)
+    setIsAddColumnDialogOpen(false)
+  }
+
+
 
   const updateColumnData = (columnKey, newData) => {
       setColumnData(
@@ -54,7 +72,7 @@ function App() {
   }, [columnData]);
 
   return (
-    <>
+    <div className="app">
       <Toaster className="dark" />
 
       <Header />
@@ -64,10 +82,11 @@ function App() {
             <Tooltip className="dark">
               <TooltipTrigger className="dark" asChild>
               <Button
-            className="dark add-column-button"
-            size="icon"
-            variant="outline"
-          >
+                className="dark add-column-button"
+                size="icon"
+                variant="outline"
+                onClick={openAddColumnDialog}
+              >
             <Plus className="text-white" />
           </Button>
               </TooltipTrigger>
@@ -76,20 +95,28 @@ function App() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+
+          <AddColumn 
+            isOpen={isAddColumnDialogOpen}
+            onClose={handleDialogClose}
+            onSaveColumn={addColumn}
+          />
           
         </div>
-        {columnData.map((column, index) => (
-          <Column
-            title={column.title}
-            count={column.count}
-            key={index}
-            // tasks={tasks.filter((task) => task.status === column?.title)}
-            tasks={column.data}
-            onTasksChange={handleTasksArrayChange}
-          />
-        ))}
+        <div className="columns flex gap-3">
+          {columnData.map((column, index) => (
+            <Column
+              title={column.title}
+              count={column.count}
+              key={index}
+              // tasks={tasks.filter((task) => task.status === column?.title)}
+              tasks={column.data}
+              onTasksChange={handleTasksArrayChange}
+            />
+          ))}
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 

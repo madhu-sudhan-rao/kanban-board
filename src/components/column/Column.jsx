@@ -24,8 +24,6 @@ Column.defaultProps = {
   onTasksChange: () => {},
 };
 
-
-
 function Column({ title, count, tasks, onTasksChange }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
@@ -41,31 +39,27 @@ function Column({ title, count, tasks, onTasksChange }) {
   };
 
   const handleAddTask = (task, sheetType) => {
-    console.log("🚀 ~ handleAddTask ~ task:", task)
-    // search for existing task
-
-    if(sheetType === "edit") {
-      const matchedTask = tasks?.find(t => t?.id === task?.id);
-      if(matchedTask) {
-        const newTasks = tasks?.map(t => t?.id === task?.id ? task : t);
-        console.log("🚀 ~ handleAddTask ~ newTasks:", newTasks)
-        tasks = newTasks
-        showToast('Task updated successfully!')
-        onTasksChange(newTasks, title)
-      } 
+    if (sheetType === "edit") {
+      const matchedTask = tasks?.find((t) => t?.id === task?.id);
+      if (matchedTask) {
+        const newTasks = tasks?.map((t) => (t?.id === task?.id ? task : t));
+        tasks = newTasks;
+        showToast("Task updated successfully!");
+        onTasksChange(newTasks, title);
+      }
     } else {
       // tasks.push(task);
       tasks = [...tasks, task];
-      showToast('Task added successfully!')
-      onTasksChange(tasks, title)
+      showToast("Task added successfully!");
+      onTasksChange(tasks, title);
     }
 
     handleSheetClose(null);
   };
 
   const showToast = (message) => {
-    toast.success(message)
-  }
+    toast.success(message);
+  };
 
   return (
     <div className="column">
@@ -76,10 +70,14 @@ function Column({ title, count, tasks, onTasksChange }) {
           <Badge className="dark">{count}</Badge>
         </div>
         <div className="col-head-suffix">
-          <Button variant="ghost" className="dark" size="icon" onClick={() => handleSheetOpen(null)}>
-            <Plus className="text-white"  />
+          <Button
+            variant="ghost"
+            className="dark"
+            size="icon"
+            onClick={() => handleSheetOpen(null)}
+          >
+            <Plus className="text-white" />
           </Button>
-     
         </div>
       </div>
       <div className="tasks">
@@ -87,12 +85,12 @@ function Column({ title, count, tasks, onTasksChange }) {
       </div>
 
       <TaskSheet
-            isOpen={isSheetOpen}
-            onClose={handleSheetClose}
-            sheetType={selectedTask ? "edit" : "add"}
-            task={selectedTask}
-            onAddTask={handleAddTask}
-          />
+        isOpen={isSheetOpen}
+        onClose={handleSheetClose}
+        sheetType={selectedTask ? "edit" : "add"}
+        task={selectedTask}
+        onAddTask={handleAddTask}
+      />
     </div>
   );
 }

@@ -64,9 +64,9 @@ const priorities = [
 
 const generateId = () => {
   const timestamp = Date.now();
-  const datacenterId = 0; // Example datacenter ID
-  const machineId = 0; // Example machine ID
-  const sequenceNumber = 0; // Example sequence number
+  const datacenterId = 0; 
+  const machineId = 0; 
+  const sequenceNumber = 0;
 
   const taskId =
     (timestamp << 23) |

@@ -1,16 +1,34 @@
+
+.app {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+}
+
+
 .main {
     display: flex;
     /* justify-content: space-around; */
     gap: 20px;
     padding: 10px;
+    background-color: #09090b;
+    max-width: 100vw;
+    flex: 1;
 }
 
-.main {
-    background-color: #09090b;
-}
+
 
 .add-column-button {
-    /* border: 1px solid white; */
-    /* height: max-content; */
+
     padding: 24px;
+}
+
+.columns {
+    flex: 1;
+    height: 100%;
+    overflow: auto;
+    scrollbar-color: rgb(20, 20, 20) rgb(42, 42, 42);
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+
 }
