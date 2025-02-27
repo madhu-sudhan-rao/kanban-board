@@ -1,0 +1,96 @@
+import { useEffect, useState } from "react";
+import "./App.css";
+import Column from "./components/column/Column";
+import Header from "./components/header/Header";
+import { Toaster } from "./components/ui/sonner";
+import { Button } from "./components/ui/button";
+import { Plus } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./components/ui/tooltip";
+import { toast } from "sonner";
+
+function addColumnsToLocalStorage(columns) {
+  if (columns && columns.length > 0) {
+    localStorage.setItem("columnData", JSON.stringify(columns));
+  }
+}
+
+function getColumnsFromLocalStorage() {
+  try {
+    const columns = localStorage.getItem("columnData");
+    return columns ? JSON.parse(columns) : [];
+  } catch (error) {
+    console.error("Error parsing columns from local storage:", error);
+    toast.error("Failed to load tasks!")
+    return [];
+  }
+}
+
+function App() {
+
+  const [columnData, setColumnData] = useState(getColumnsFromLocalStorage())
+
+  const updateColumnData = (columnKey, newData) => {
+      setColumnData(
+        columnData.map((column) =>
+          column.value === columnKey ? { ...column, data: newData, count: newData.length } : column
+        )
+      );
+  };
+
+  useEffect(() => {
+    if (columnData && columnData.length > 0) {
+      localStorage.setItem("columnData", JSON.stringify(columnData));
+    }
+  }, [columnData])
+
+
+
+  const handleTasksArrayChange = (updatedTasks, taskType) => {
+    updateColumnData(taskType.split(' ').join('').toLowerCase(), updatedTasks)
+  };
+
+  useEffect(() => {
+    addColumnsToLocalStorage(columnData);
+  }, [columnData]);
+
+  return (
+    <>
+      <Toaster className="dark" />
+
+      <Header />
+      <div className="main">
+        <div className=" border-red-100">
+          <TooltipProvider className="dark">
+            <Tooltip className="dark">
+              <TooltipTrigger className="dark" asChild>
+              <Button
+            className="dark add-column-button"
+            size="icon"
+            variant="outline"
+          >
+            <Plus className="text-white" />
+          </Button>
+              </TooltipTrigger>
+              <TooltipContent className="dark">
+                Add column
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+        </div>
+        {columnData.map((column, index) => (
+          <Column
+            title={column.title}
+            count={column.count}
+            key={index}
+            // tasks={tasks.filter((task) => task.status === column?.title)}
+            tasks={column.data}
+            onTasksChange={handleTasksArrayChange}
+          />
+        ))}
+      </div>
+    </>
+  );
+}
+
+export default App;

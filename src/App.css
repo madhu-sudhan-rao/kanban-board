@@ -1,0 +1,16 @@
+.main {
+    display: flex;
+    /* justify-content: space-around; */
+    gap: 20px;
+    padding: 10px;
+}
+
+.main {
+    background-color: #09090b;
+}
+
+.add-column-button {
+    /* border: 1px solid white; */
+    /* height: max-content; */
+    padding: 24px;
+}

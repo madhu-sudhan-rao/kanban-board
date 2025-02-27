@@ -1,0 +1,16 @@
+
+.header {
+    /* @apply bg-gray-600 text-white px-4 py-2; */
+
+    padding: 10px;
+    border-bottom: 1px dashed #cccccc83;
+    background-color: #09090b;
+
+}
+
+.header .title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: rgb(243, 243, 243);
+}

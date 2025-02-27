@@ -1,0 +1,18 @@
+.tasks {
+    width: 100%;
+
+    padding: 5px 0px;
+
+}
+
+.task-card:hover {
+    background-color: rgb(16, 16, 16);
+}
+
+.created-at {
+    font-size: 10px;
+    color: rgb(124, 122, 122);
+    align-items: end;
+    width: 100%;
+    text-align: end;
+}
