@@ -1,8 +1,27 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Kanban Board Application
+A simple Kanban board application built with React, designed to help teams manage tasks and workflows efficiently.
 
-Currently, two official plugins are available:
+## Features
+Drag-and-Drop Tasks: Move tasks between columns (To-Do, In Progress, Completed) using drag-and-drop functionality. (PENDING)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Add New Columns: Dynamically add new columns to the board as needed. (PENDING)
+
+Task Management: Create, edit, and delete tasks within each column. (DELETE PENDING)
+
+Toast Notifications: Receive feedback through toast notifications for successful actions or errors.
+
+Local Storage Integration: Tasks are stored in local storage to persist data between sessions.
+
+Getting Started
+1. Clone the Repository: git clone https://github.com/madhu-sudhan-rao/kanban-board.git
+2. Install Dependencies: npm install
+3. Start the Application: npm run dev
+
+4. Technologies Used
+Frontend: React + Vite
+State Management: React Hooks
+Drag-and-Drop: 
+Notifications: react-toastify
+Storage: Local Storage
