@@ -8,22 +8,30 @@ import {
 } from "../ui/dialog";
 import PropTypes from "prop-types";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 AddColumn.propTypes = {
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
   onSaveColumn: PropTypes.func,
+  columnDetails: PropTypes.object
 };
 
 AddColumn.defaultProps = {
   isOpen: false,
   onClose: () => {},
   onSaveColumn: () => {},
+  columnDetails: {}
 };
 
-function AddColumn({ isOpen, onClose, onSaveColumn }) {
+function AddColumn({ isOpen, onClose, onSaveColumn, columnDetails }) {
   const [columnName, setColumnName] = useState("");
+
+  useEffect(() => {
+    if(columnDetails) {
+      setColumnName(columnDetails)
+    }
+  }, [])
 
   const handleSubmitColumn = () => {
     onSaveColumn({
@@ -62,7 +70,6 @@ function AddColumn({ isOpen, onClose, onSaveColumn }) {
                 onChange={(e) => setColumnName(e.target.value)}
                 required
                 placeholder="Enter column name"
-                autoFocus={true}
                 onKeyDown={(e) => handleKeydown(e)}
               />
               {/* {!columnName && <div className="text-xs text-red-600">Please enter the column name</div>} */}

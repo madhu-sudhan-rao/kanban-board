@@ -44,3 +44,21 @@
 .add-icon i {
     color: rgb(243, 243, 243);
 }
+
+.button-icon {
+    color: gray;
+}
+
+.button-icon:hover {
+    color: rgb(243, 243, 243);
+
+}
+
+.danger {
+    color: red
+}
+
+.danger:hover {
+    background-color: #f27a7a5c;
+    color: red;
+}

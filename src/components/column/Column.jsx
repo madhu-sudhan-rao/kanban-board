@@ -5,8 +5,10 @@ import "./Column.css";
 import PropTypes from "prop-types";
 import TaskSheet from "../taskSheet/TaskSheet";
 import { Button } from "../ui/button";
-import { Plus } from "lucide-react";
+import { Ellipsis, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuPortal, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import AddColumn from "../addColumn/AddColumn";
 
 Column.propTypes = {
   title: PropTypes.string,
@@ -24,9 +26,66 @@ Column.defaultProps = {
   onTasksChange: () => {},
 };
 
-function Column({ title, count, tasks, onTasksChange }) {
+
+
+function Column({ title, count, tasks, onTasksChange, onColumnEdit }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [isAddColumnDialogOpen, setIsAddColumnDialogOpen ] = useState(false)
+
+  const openAddColumnDialog = () => {
+    setIsAddColumnDialogOpen(true)
+  }
+
+  const handleDialogClose = () => {
+    setIsAddColumnDialogOpen(close)
+  }
+
+  const addColumn = (column) => {
+    console.log("🚀 ~ addColumn ~ column:", column)
+    // const updatedColumns = [...columnData, column];
+    // setColumnData(updatedColumns)
+    setIsAddColumnDialogOpen(false)
+    // onColumnEdit({
+    //   title: 
+    // })
+    
+  }
+
+  const columnMenu = [
+    {
+      title: "Edit Column",
+      disable: false,
+      value: "edit",
+      click: (value) => {
+        setIsAddColumnDialogOpen(true)
+      },
+      styleClass: "default",
+    },
+    {
+      title: "Delete",
+      disable: false,
+      value: "delete",
+      click: (value) => {
+        console.log(`Clicked ${value}`);
+      },
+      styleClass: "danger",
+    },
+  ];
+  
+  // const [isColumnMenuOpen, setIsColumnMenuOpen] = useState(false);
+
+  // const handleColumnMenuOpen = () => {
+  //   setIsColumnMenuOpen(true);
+  // };
+
+  // const handleColumnMenuClose = () => {
+  //   setIsColumnMenuOpen(false);
+  // };
+
+  // const handleColumnMenuOptionClick = () => {
+  //   console.log("Clicked");
+  // };
 
   const handleSheetOpen = (task) => {
     setIsSheetOpen(true);
@@ -70,13 +129,68 @@ function Column({ title, count, tasks, onTasksChange }) {
           <Badge className="dark">{count}</Badge>
         </div>
         <div className="col-head-suffix">
+          {/* <Dropdown isOpen={isColumnMenuOpen} list={columnMenu} onClose={handleColumnMenuClose}  /> */}
+
+          <AddColumn
+            isOpen={isAddColumnDialogOpen}
+            onClose={handleDialogClose}
+            onSaveColumn={addColumn}
+            columnDetails={title}
+          />
+
+          <DropdownMenu className="dark">
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="dark"
+                size="icon"
+                // onClick={handleColumnMenuOpen}
+              >
+                <Ellipsis className="dark button-icon" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="dark">
+            <DropdownMenuGroup>
+                    {
+                        columnMenu.map((option, index) => (
+                            <DropdownMenuItem className={option?.styleClass}  key={index} disabled={option?.disabled} onClick={() => option?.click(option?.value)}>
+                                <span >{(option?.title && !option?.subMenu) && option?.title}</span>
+                                {option.shortcut && <DropdownMenuShortcut>{option.shortcut}</DropdownMenuShortcut> }
+
+                                {option?.subMenu &&
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger>{option?.title}</DropdownMenuSubTrigger>
+                                            <DropdownMenuPortal>
+                                                <DropdownMenuSubContent>
+                                                    {
+                                                        option?.subMenu?.map((subMenuOption, subMenuIndex) => (
+                                                            <DropdownMenuItem key={subMenuIndex} disabled={subMenuOption?.disabled} >
+                                                                {subMenuOption?.title}
+                                                            </DropdownMenuItem>
+
+                                                        ))
+                                                    }
+                                                </DropdownMenuSubContent>
+                                            </DropdownMenuPortal>
+
+
+                                    </DropdownMenuSub>
+                                }
+                                
+                            </DropdownMenuItem>
+                        ))
+                    }
+                </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Button
             variant="ghost"
             className="dark"
             size="icon"
             onClick={() => handleSheetOpen(null)}
           >
-            <Plus className="text-white" />
+            <Plus className="dark button-icon" />
           </Button>
         </div>
       </div>
