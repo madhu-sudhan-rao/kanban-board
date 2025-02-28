@@ -83,7 +83,7 @@ function AddColumn({ isOpen, onClose, onSaveColumn, columnDetails }) {
               variant="default"
               className="dark"
               onClick={() => handleSubmitColumn()}
-              disabled={columnName?.trim()?.length < 1}
+              disabled={columnName?.length < 1}
             >
               Save
             </Button>
