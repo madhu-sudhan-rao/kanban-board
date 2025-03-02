@@ -58,7 +58,7 @@ const Profile = () => {
   return (
     <div className="user-profile">
       {userDetails ? (
-        <>
+        <div >
           <Toaster position="top-right" />
           <DropdownMenu className="dark">
             <DropdownMenuTrigger asChild>
@@ -121,7 +121,7 @@ const Profile = () => {
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-        </>
+        </div>
       ) : (
         <p>No user logged in</p>
       )}

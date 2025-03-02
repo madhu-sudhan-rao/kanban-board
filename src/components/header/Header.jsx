@@ -7,7 +7,7 @@ function Header() {
     
     return (
         <>
-            <div className="header flex justify-between">
+            <div className="header flex justify-between items-center">
                 <div className='title'>KB Board</div>
                 <div className="avatar">
                     <Profile />
