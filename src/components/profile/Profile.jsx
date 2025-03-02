@@ -14,34 +14,32 @@ import {
 } from "../ui/dropdown-menu";
 import "./Profile.css";
 import { auth } from "@/firebase-config";
+import { Toaster } from "../ui/sonner";
+import { toast } from "sonner";
 
 const Profile = () => {
   // const { userDetails, loading } = useContext(UserContext);
   const [userDetails, setUserDetails] = useState(null);
 
   const onLogout = async () => {
-    console.log("logout");
 
-    // localStorage.removeItem("userDetails");
-    
     try {
       await auth.signOut().then(() => {
         localStorage.clear();
         window.location.reload();
-        console.log("Signed out successfully");
+        toast.success("Signed out successfully!");
       });
     } catch (error) {
       console.error("Error signing out:", error);
+      toast.error("Failed to sign out. Please try again.");
     }
   };
 
 
   useEffect(() => {
-    console.log("userDetails", userDetails);
-    const localuserDetails = JSON.parse(localStorage.getItem("userDetails"));
-    console.log("🚀 ~ useEffect ~ localuserDetails:", localuserDetails);
-    if (localuserDetails) {
-      setUserDetails(localuserDetails);
+    const localUserDetails = JSON.parse(localStorage.getItem("userDetails"));
+    if (localUserDetails) {
+      setUserDetails(localUserDetails);
     }
   }, []);
 
@@ -61,6 +59,7 @@ const Profile = () => {
     <div className="user-profile">
       {userDetails ? (
         <>
+          <Toaster position="top-right" />
           <DropdownMenu className="dark">
             <DropdownMenuTrigger asChild>
               <div className="user-profile-container flex items-center gap-2">
@@ -73,7 +72,7 @@ const Profile = () => {
                     {userDetails.displayName?.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                <span className="user-name text-white">
+                <span className="user-name text-white hidden md:block">
                   {userDetails.displayName}
                 </span>
               </div>
