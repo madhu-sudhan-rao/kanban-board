@@ -14,15 +14,15 @@ AddColumn.propTypes = {
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
   onSaveColumn: PropTypes.func,
-  columnDetails: PropTypes.object
+  columnDetails: PropTypes.string
 };
 
-AddColumn.defaultProps = {
-  isOpen: false,
-  onClose: () => {},
-  onSaveColumn: () => {},
-  columnDetails: {}
-};
+// AddColumn.defaultProps = {
+//   isOpen: false,
+//   onClose: () => {},
+//   onSaveColumn: () => {},
+//   columnDetails: ''
+// };
 
 function AddColumn({ isOpen, onClose, onSaveColumn, columnDetails }) {
   const [columnName, setColumnName] = useState("");

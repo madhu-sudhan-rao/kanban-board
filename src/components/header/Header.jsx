@@ -1,3 +1,4 @@
+import Profile from '../profile/Profile'
 import './Header.css'
 
 function Header() {
@@ -6,10 +7,12 @@ function Header() {
     
     return (
         <>
-            <div className="header">
+            <div className="header flex justify-between">
                 <div className='title'>KB Board</div>
+                <div className="avatar">
+                    <Profile />
+                </div>
             </div>
- 
 
         </>
     )

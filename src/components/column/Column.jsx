@@ -18,13 +18,13 @@ Column.propTypes = {
   onTasksChange: PropTypes.func,
 };
 
-Column.defaultProps = {
-  title: "To-do",
-  count: 0,
-  key: 0,
-  tasks: [],
-  onTasksChange: () => {},
-};
+// Column.defaultProps = {
+//   title: "To-do",
+//   count: 0,
+//   key: 0,
+//   tasks: [],
+//   onTasksChange: () => {},
+// };
 
 
 
@@ -195,7 +195,7 @@ function Column({ title, count, tasks, onTasksChange, onColumnEdit }) {
         </div>
       </div>
       <div className="tasks">
-        <Task tasks={tasks} onTaskClick={handleSheetOpen} />
+        <Task tasks={tasks || []} onTaskClick={handleSheetOpen} />
       </div>
 
       <TaskSheet
