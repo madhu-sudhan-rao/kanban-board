@@ -9,10 +9,10 @@ Task.propTypes = {
   onTaskClick: PropTypes.func,
 };
 
-Task.defaultProps = {
-  tasks: [],
-  onTaskClick: () => {}
-};
+// Task.defaultProps = {
+//   tasks: [],
+//   onTaskClick: () => {}
+// };
 
 function Task({ tasks, onTaskClick }) {
 
@@ -25,7 +25,7 @@ function Task({ tasks, onTaskClick }) {
   return (
     <>
       <div className="tasks flex flex-col gap-2 cursor-pointer">
-        {tasks.map((task) => (
+        {tasks?.map((task) => (
             <Card className="dark task-card" key={task?.id} onClick={() => onTaskClick(task)}>
                 <CardHeader>
                     <CardTitle>{task?.title}</CardTitle>
