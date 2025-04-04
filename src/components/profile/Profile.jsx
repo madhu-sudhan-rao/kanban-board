@@ -27,7 +27,7 @@ const Profile = () => {
       await auth.signOut().then(() => {
         localStorage.clear();
         window.location.reload();
-        toast.success("Signed out successfully!");
+        // toast.success("Signed out successfully!");
       });
     } catch (error) {
       console.error("Error signing out:", error);
