@@ -123,7 +123,7 @@ const Profile = () => {
           </DropdownMenu>
         </div>
       ) : (
-        <p>No user logged in</p>
+        <p>User not logged in</p>
       )}
     </div>
   );
