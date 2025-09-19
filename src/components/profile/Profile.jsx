@@ -72,9 +72,9 @@ const Profile = () => {
                     {userDetails.displayName?.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                <span className="user-name text-white hidden md:block">
+                {/* <span className="user-name text-white hidden md:block">
                   {userDetails.displayName}
-                </span>
+                </span> */}
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="dark">

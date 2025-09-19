@@ -1,30 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc
+} from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import "./App.css";
+import AddColumn from "./components/addColumn/AddColumn";
 import Column from "./components/column/Column";
 import Header from "./components/header/Header";
-import { Toaster } from "./components/ui/sonner";
-import { Button } from "./components/ui/button";
-import { Plus } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./components/ui/tooltip";
-import { toast } from "sonner";
-import AddColumn from "./components/addColumn/AddColumn";
-import { 
-  doc, 
-  getDoc, 
-  getDocs, 
-  collection, 
-  setDoc, 
-  updateDoc,
-  arrayUnion,
-  arrayRemove 
-} from "firebase/firestore";
-import { db } from "./firebase-config";
 import SignInWithGoogle from "./components/signInWithGoogle/SignInWithGoogle";
+import { Toaster } from "./components/ui/sonner";
+import { db } from "./firebase-config";
 
 function App() {
   const [userDetails, setUserDetails] = useState(null);
@@ -180,31 +168,13 @@ function App() {
         <div className="app">
           <Toaster className="dark" />
 
-          <Header />
+          <Header onAddColumnClick={openAddColumnDialog} />
           <div className="main">
-            <div className=" border-red-100">
-              <TooltipProvider className="dark">
-                <Tooltip className="dark">
-                  <TooltipTrigger className="dark" asChild>
-                    <Button
-                      className="dark add-column-button"
-                      size="icon"
-                      variant="outline"
-                      onClick={openAddColumnDialog}
-                    >
-                      <Plus className="text-white" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent className="dark">Add column</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-
-              <AddColumn
-                isOpen={isAddColumnDialogOpen}
-                onClose={handleDialogClose}
-                onSaveColumn={addColumn}
-              />
-            </div>
+            <AddColumn
+              isOpen={isAddColumnDialogOpen}
+              onClose={handleDialogClose}
+              onSaveColumn={addColumn}
+            />
             <div className="columns flex gap-3">
               {columnData.map((column, index) => (
                 <Column
@@ -223,4 +193,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
