@@ -13,96 +13,114 @@ import {
 } from "./components/ui/tooltip";
 import { toast } from "sonner";
 import AddColumn from "./components/addColumn/AddColumn";
-import { doc, getDoc, getDocs, collection } from "firebase/firestore";
+import { 
+  doc, 
+  getDoc, 
+  getDocs, 
+  collection, 
+  setDoc, 
+  updateDoc,
+  arrayUnion,
+  arrayRemove 
+} from "firebase/firestore";
 import { db } from "./firebase-config";
 import SignInWithGoogle from "./components/signInWithGoogle/SignInWithGoogle";
 
-function addColumnsToLocalStorage(columns) {
-  if (columns && columns.length > 0) {
-    localStorage.setItem("columnData", JSON.stringify(columns));
-  }
-}
-
-function getColumnsFromLocalStorage() {
-  try {
-    const columns = localStorage.getItem("columnData");
-    return columns ? JSON.parse(columns) : [];
-  } catch (error) {
-    console.error("Error parsing columns from local storage:", error);
-    toast.error("Failed to load tasks!");
-    return [];
-  }
-}
-
 function App() {
-  // const { userDetails, loading, columns } = useContext(UserContext);
-
   const [userDetails, setUserDetails] = useState(null);
-  const [columnData, setColumnData] = useState(getColumnsFromLocalStorage());
+  const [columnData, setColumnData] = useState([]);
   const [isAddColumnDialogOpen, setIsAddColumnDialogOpen] = useState(false);
   const [isUserSignedIn, setIsUserSignedIn] = useState(false);
 
   const handleSuccessSignIn = () => {
     console.log("Signed in successfully");
-
     setIsUserSignedIn(true);
-    const localuserDetails = JSON.parse(localStorage.getItem("userDetails"));
-    console.log("🚀 ~ useEffect ~ localuserDetails:", localuserDetails);
-    if (localuserDetails) {
-      setIsUserSignedIn(true);
-      setUserDetails(localuserDetails);
-      // getColumnsFromLocalStorage();
-      getColumnsOfUser(localuserDetails.uid);
+    const localUserDetails = JSON.parse(localStorage.getItem("userDetails"));
+    if (localUserDetails) {
+      setUserDetails(localUserDetails);
+      getColumnsOfUser(localUserDetails.uid);
     }
   };
 
-  const getAllColumns = async () => {
-    try {
-      const colRef = collection(db, "columns");
-
-      const querySnapshot = await getDocs(colRef);
-
-      const columns = [];
-
-      querySnapshot.forEach((doc) => {
-        columns.push({ id: doc.id, ...doc.data() });
-      });
-      return columns;
-    } catch (error) {
-      console.error("Error getting document:", error);
-    }
-  };
-
+  // Get columns from Firestore for the current user
   const getColumnsOfUser = async (uid) => {
     try {
       const docRef = doc(db, "users", uid);
       const docSnap = await getDoc(docRef);
+      
       if (docSnap.exists()) {
-        const fetchedColumns = docSnap.data();
-        console.log("🚀 ~ getColumnsOfUser ~ fetchedColumns:", fetchedColumns);
-        setColumnData(
-          Array.isArray(fetchedColumns.columns) ? fetchedColumns.columns : []
-        );
+        const userData = docSnap.data();
+        // Ensure each column has all required properties
+        const columns = Array.isArray(userData.columns) ? userData.columns : [];
+        const validatedColumns = columns.map(column => ({
+          ...column,
+          data: Array.isArray(column.data) ? column.data : [],
+          count: column.count || column.data?.length || 0
+        }));
+        
+        setColumnData(validatedColumns);
+        
+        // Also update localStorage as backup
+        if (validatedColumns.length > 0) {
+          localStorage.setItem("columnData", JSON.stringify(validatedColumns));
+        }
       } else {
-        console.log("No such document!");
+        // Create a new user document if it doesn't exist
+        await setDoc(docRef, { columns: [] });
+        setColumnData([]);
       }
     } catch (error) {
       console.error("Error fetching user details:", error);
+      toast.error("Failed to load tasks from cloud!");
+      
+      // Fallback to localStorage if Firestore fails
+      try {
+        const columns = localStorage.getItem("columnData");
+        if (columns) {
+          const parsedColumns = JSON.parse(columns);
+          // Validate columns from localStorage too
+          const validatedColumns = parsedColumns.map(column => ({
+            ...column,
+            data: Array.isArray(column.data) ? column.data : [],
+            count: column.count || column.data?.length || 0
+          }));
+          setColumnData(validatedColumns);
+        }
+      } catch (parseError) {
+        console.error("Error parsing columns from local storage:", parseError);
+      }
+    }
+  };
+
+  // Update user's columns in Firestore
+  const updateUserColumns = async (columns) => {
+    if (!userDetails) return;
+    
+    try {
+      const userRef = doc(db, "users", userDetails.uid);
+      await updateDoc(userRef, {
+        columns: columns
+      });
+      
+      // Also update localStorage as backup
+      localStorage.setItem("columnData", JSON.stringify(columns));
+    } catch (error) {
+      console.error("Error updating columns in Firestore:", error);
+      toast.error("Failed to sync with cloud!");
+      
+      // Still update localStorage even if Firestore fails
+      localStorage.setItem("columnData", JSON.stringify(columns));
     }
   };
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ userDetails:", userDetails);
-    const localuserDetails = JSON.parse(localStorage.getItem("userDetails"));
-    console.log("🚀 ~ useEffect ~ localuserDetails:", localuserDetails);
-    if (localuserDetails) {
+    const localUserDetails = JSON.parse(localStorage.getItem("userDetails"));
+    if (localUserDetails) {
       setIsUserSignedIn(true);
-      setUserDetails(localuserDetails);
-      // getColumnsFromLocalStorage();
-      getColumnsOfUser(localuserDetails.uid);
+      setUserDetails(localUserDetails);
+      getColumnsOfUser(localUserDetails.uid);
     }
   }, []);
-
 
   const openAddColumnDialog = () => {
     setIsAddColumnDialogOpen(true);
@@ -112,27 +130,40 @@ function App() {
     setIsAddColumnDialogOpen(false);
   };
 
-  const addColumn = (column) => {
-    const updatedColumns = [...columnData, column];
+  // Add a new column and update Firestore
+  const addColumn = async (column) => {
+    // Ensure the new column has all required properties
+    const newColumn = {
+      ...column,
+      data: Array.isArray(column.data) ? column.data : [],
+      count: column.count || column.data?.length || 0
+    };
+    
+    const updatedColumns = [...columnData, newColumn];
     setColumnData(updatedColumns);
     setIsAddColumnDialogOpen(false);
+    
+    // Update Firestore
+    await updateUserColumns(updatedColumns);
   };
 
-  const updateColumnData = (columnKey, newData) => {
-    setColumnData(
-      columnData.map((column) =>
-        column.value === columnKey
-          ? { ...column, data: newData, count: newData.length }
-          : column
-      )
+  // Update column data and sync with Firestore
+  const updateColumnData = async (columnKey, newData) => {
+    const updatedColumns = columnData.map((column) =>
+      column.value === columnKey
+        ? { 
+            ...column, 
+            data: Array.isArray(newData) ? newData : [], 
+            count: newData.length 
+          }
+        : column
     );
+    
+    setColumnData(updatedColumns);
+    
+    // Update Firestore
+    await updateUserColumns(updatedColumns);
   };
-
-  useEffect(() => {
-    if (columnData && columnData.length > 0) {
-      localStorage.setItem("columnData", JSON.stringify(columnData));
-    }
-  }, [columnData]);
 
   const handleTasksArrayChange = (updatedTasks, taskType) => {
     updateColumnData(taskType.split(" ").join("").toLowerCase(), updatedTasks);
@@ -178,9 +209,8 @@ function App() {
               {columnData.map((column, index) => (
                 <Column
                   title={column.title}
-                  count={column.count}
+                  count={column.count || 0}
                   key={index}
-                  // tasks={tasks.filter((task) => task.status === column?.title)}
                   tasks={Array.isArray(column.data) ? column.data : []}
                   onTasksChange={handleTasksArrayChange}
                 />
@@ -193,4 +223,4 @@ function App() {
   );
 }
 
-export default App;
+export default App

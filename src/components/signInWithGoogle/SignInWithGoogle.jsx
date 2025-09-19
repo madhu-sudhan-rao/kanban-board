@@ -1,12 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { Button } from "../ui/button";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "@/firebase-config";
-import { toast } from "sonner";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import PropTypes from "prop-types";
-import { Toaster } from "../ui/sonner";
-import { Plus } from "lucide-react";
+import { toast } from "sonner";
 import gIcon from '../../assets/google_g_icon.png';
+import { Button } from "../ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Toaster } from "../ui/sonner";
 
 SignInWithGoogle.propTypes = {
   signInSuccess: PropTypes.func.isRequired, // Ensure this prop is required
